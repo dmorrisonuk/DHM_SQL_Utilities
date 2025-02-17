@@ -47,4 +47,14 @@ Using pgAdmin allows you to inspect a Postgres DB running in docker.
 <br>
 
 
+[Setting up PostgreSQL and pgAdmin 4 with Docker](https://medium.com/@marvinjungre/get-postgresql-and-pgadmin-4-up-and-running-with-docker-4a8d81048aea)
 
+
+<br> 
+
+
+``` 
+docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' postgres
+```
+
+<br>
