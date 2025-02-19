@@ -56,7 +56,6 @@ As such there is no `update` semantics - only `insert` and `logical_delete`
 |LookUp_Name|Logical name of the reference data entity|'Environment'|Insert|	
 |LookUp_Record_ID|Integer key relative to that LOOKUP_NAME. Starts at one for each Reference Data Entity. Can be controlled by a sequence|Insert|1|
 |LookUp_Value|Actual value to be held|'Prod'|Insert|
-|Is_Current|Allows for application-level logical deletion|1|Insert, Logical_Delete|		
 |LookUp_Version_Key|A second sequence-controlled key, which can be used to link data uploaded together into a single version|1|Insert|
 |Note|Optional Note||Insert|
 |Display_Order|Order of values to be shown in lookups etc.|1|Where an ordering is required, which deviates from the insertion sequence (however controlled)|
@@ -64,6 +63,7 @@ As such there is no `update` semantics - only `insert` and `logical_delete`
 |Valid From|Start date of validity of this record|'2025-01-01 00:00:00' |Insert|
 |Valid To|End-Date of validity of this record. Use a default high end date for new records|'9999-31-12 23:59:59'|Insert, Logical_Delete|
 |Updated By|Process/user who deleted this record|'user_1'|Insert, Logical_Delete|
+|Is_Skelton|Is this record a skeleton - i.e. a record created to allow a surrogate key to be generated and used before full population|
 
 <br>
 

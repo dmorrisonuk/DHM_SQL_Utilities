@@ -3,26 +3,60 @@
 
 CREATE TABLE Mgmt.LookUps
 ( 
-	[LookUp_ID]                INT IDENTITY ( 1,1 )  NOT NULL ,
-	[LookUp_Name]              VARCHAR(50)  NOT NULL ,
-	[LOOKUP_RECORD_ID]         INT  NOT NULL ,
-	[LOOKUP_VALUE]             VARCHAR(255)  NOT NULL 		DEFAULT  'MISSING',
-	IS_CURRENT				   BIT							DEFAULT  1,
-	[VERSION_KEY]		       INT NULL						DEFAULT  1,
-	[NOTE]				       VARCHAR(768) NULL			DEFAULT  'MISSING', 
-	DISPLAY_ORDER		       INT 		NULL, 
-	VALID_FROM				   DATETIME	NOT NULL					DEFAULT NOW()
-	VALID_TO				   DATETIME NOT NULL			DEFAULT  '9999-12-31 23:59:59',
-	[DB_CREATED_DATE]          DATETIME  NULL    			DEFAULT  NOW(),
-	[DB_CREATED_BY]            VARCHAR(255)  NULL			DEFAULT  'MISSING',
-	[DB_IS_DELETED]            BIT  NULL 					DEFAULT  'FALSE',
-	[DB_LAST_UPDATED_DATE]     DATETIME  NULL 				DEFAULT  NOW(),
-	[DB_LAST_UPDATED_BY]       VARCHAR(255)  NULL 			DEFAULT  'MISSING'
-	PRIMARY KEY  CLUSTERED ([LOOKUP_ID] ASC)
-)
-;
-
-END;
+	LookUp_ID              	BIGINT GENERATED ALWAYS AS IDENTITY,
+	LookUp_Name            	VARCHAR(50)  NOT NULL ,
+	LookUp_Record_ID       	INT  NOT NULL ,
+	LookUp_Value         	VARCHAR(255)  NOT NULL 		DEFAULT  'MISSING',
+	Is_Current			   	BOOLEAN							DEFAULT  TRUE,
+	Version_Key		     	INT NULL						DEFAULT  1,
+	Note				   	VARCHAR(768) NULL			DEFAULT  'MISSING', 
+	Display_Order       	INT 		NULL, 
+	Valid_From		   		TIMESTAMP	NOT NULL					DEFAULT NOW(),
+	Valid_To		  		TIMESTAMP NOT NULL			DEFAULT  '9999-12-31 23:59:59',
+	Is_Skeleton		  		BOOLEAN						DEFAULT 	TRUE,
+	DB_Created_Date     	TIMESTAMP  NULL    			DEFAULT  NOW(),
+	DB_Created_By        	VARCHAR(255)  NULL			DEFAULT  'MISSING',
+	DB_Is_Deleted         	BOOLEAN  NULL 					DEFAULT  FALSE,
+	DB_Last_Updated_Date   	TIMESTAMP  NULL 				DEFAULT  NOW(),
+	DB_Last_Updated_By   	VARCHAR(255)  NULL 			DEFAULT  'MISSING',
+	Constraint "LookUp_ID" PRIMARY KEY (LookUp_ID)
+);
 
 
 
+INSERT INTO Mgmt.lookups(
+	lookup_id, lookup_name, lookup_record_id, lookup_value, is_current, version_key, note, display_order, valid_from, valid_to, is_skeleton, db_created_date, db_created_by, db_is_deleted, db_last_updated_date, db_last_updated_by)
+	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+
+
+
+
+
+/** Create Entity 
+| An Entity is the container for any values. 
+| An Entity is always created with a sekelton record to capture Entity creation. 
+\******************************/ 
+
+
+
+INSERT INTO Mgmt.lookups(
+	 lookup_name, lookup_record_id, lookup_value, is_current, version_key, note, display_order, valid_from, valid_to, is_skeleton, db_created_date, db_created_by, db_is_deleted, db_last_updated_date, db_last_updated_by)
+	VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+
+-- PROCEDURE: mgmt.Create_LookUp(character varying[])
+
+-- DROP PROCEDURE IF EXISTS mgmt."Create_LookUp"(character varying[]);
+
+CREATE OR REPLACE PROCEDURE Mgmt.sp_Create_LookUp
+LANGUAGE 'sql'
+AS $BODY$
+SELECT "LookUp_ID"
+	FROM mgmt."Test";
+$BODY$;
+ALTER PROCEDURE mgmt."Select_LookUps"()
+    OWNER TO myuser;
+
+COMMENT ON PROCEDURE mgmt."Create_LookUp"(character varying[])
+    IS 'Logical LookUp Creation';

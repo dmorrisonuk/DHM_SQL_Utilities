@@ -1,0 +1,7 @@
+
+
+/* Create Mgmt schema */
+
+CREATE SCHEMA Mgmt
+    AUTHORIZATION myuser;
+
