@@ -11,6 +11,7 @@ CREATE TABLE Mgmt.LookUps
 	Version_Key		     	INT NULL						DEFAULT  1,
 	Note				   	VARCHAR(768) NULL			DEFAULT  'MISSING', 
 	Display_Order       	INT 		NULL, 
+	Ref_Entity				VARCHAR(255)	NULL			DEFAULT  'MISSING', 
 	Valid_From		   		TIMESTAMP	NOT NULL					DEFAULT NOW(),
 	Valid_To		  		TIMESTAMP NOT NULL			DEFAULT  '9999-12-31 23:59:59',
 	Is_Skeleton		  		BOOLEAN						DEFAULT 	TRUE,

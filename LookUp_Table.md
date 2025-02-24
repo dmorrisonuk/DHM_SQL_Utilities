@@ -59,10 +59,11 @@ As such there is no `update` semantics - only `insert` and `logical_delete`
 |LookUp_Version_Key|A second sequence-controlled key, which can be used to link data uploaded together into a single version|1|Insert|
 |Note|Optional Note||Insert|
 |Display_Order|Order of values to be shown in lookups etc.|1|Where an ordering is required, which deviates from the insertion sequence (however controlled)|
-|Created By|Process/user who created this record|'user_1'|Insert|
-|Valid From|Start date of validity of this record|'2025-01-01 00:00:00' |Insert|
-|Valid To|End-Date of validity of this record. Use a default high end date for new records|'9999-31-12 23:59:59'|Insert, Logical_Delete|
-|Updated By|Process/user who deleted this record|'user_1'|Insert, Logical_Delete|
+|Ref_Entity|Name of any reference data entity from an external data model - e.g. ACORD, Oasys|Customer|Insert, Update|	
+|Created_By|Process/user who created this record|'user_1'|Insert|
+|Valid_From|Start date of validity of this record|'2025-01-01 00:00:00' |Insert|
+|Valid_To|End-Date of validity of this record. Use a default high end date for new records|'9999-31-12 23:59:59'|Insert, Logical_Delete|
+|Updated_By|Process/user who deleted this record|'user_1'|Insert, Logical_Delete|
 |Is_Skelton|Is this record a skeleton - i.e. a record created to allow a surrogate key to be generated and used before full population|
 
 <br>
