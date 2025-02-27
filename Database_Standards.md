@@ -1,17 +1,19 @@
 
 
 
-
-
 # Object Naming Conventions
 
 
+> ! Not all SQL platforms are case sensitive ! 
 
-> [!NOTE]
-> Not all SQL platforms are case sensitive. Therefore while PascalCase can be used to highlight objects, underscore `_` is the **required** separator between Prefixes, Table Name and Suffixes.
-> <br>
-> Expect that TableName and tablename are synonymous until confirmed otherwise
 
+
+## Golden Rules
+
+1. Avoid using keywords as the only part of an object name - e.g. avoid 'User', use 'App_Users'
+2. Do not use case to distinghuish between two separate objects. Expect that TableName and tablename are synonymous until confirmed otherwise. Therefore while PascalCase can be used to highlight objects, underscore `_` is the **required** separator between Prefixes, Table Name and Suffixes.
+
+<br>
 
 
 
@@ -30,6 +32,7 @@ Prefixes are used to indicate object type except for:
 |:-----|---|
 |Foreign Key Constraint|FK_|
 |Function|fn_|
+|Index|IX_|
 |Primary Key constraint|PK_|
 |Stored Proceedure|sp_|
 |Sequence|seq_|
@@ -108,6 +111,14 @@ An accepted deviation is the case of User_IDs where we want to indicate the role
 
 Avoid using default schema (e.g. .dbo).
 
+It is preferable to populate with default values such as "Missing", True or False, high/low end dates over leaving columns as null values. 
+
+
+
+## Default Values
+
+
+## Skeleton Records
 
 
 ## DB Columns
@@ -124,7 +135,9 @@ The specifics of datatype and default value vary by platform and can be found in
 |:----|:--------|
 |DB_Created_By||
 |DB_Created_Date||
-|DB_Is_Deleted|Boolean Flag|
+|DB_Is_Deleted|Boolean Flag, allowing logical deletion at the |
+|DB_Last_Updated_By||
+|DB_Last_Updated_Date||
 
 
 <br>
@@ -143,6 +156,13 @@ Ideally consumption objects should be in schemata segmented by consumer groups -
 
 <br>
 
+
+
+# Constraints
+
+Constaints such as Primary Keys, Foreign Keys or Indexes should be defined where expected, and should generally not be suspended by database operations. 
+
+The use of skeleton records means that dropping / re-creation of constraints is rarely necessary in day-to-day operations
 
 
 

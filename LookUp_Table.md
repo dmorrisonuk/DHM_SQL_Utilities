@@ -52,7 +52,7 @@ As such there is no `update` semantics - only `insert` and `logical_delete`
 |Table Column|Definition|Example Value|When to Use|
 |:---|:---|:---|:---|
 |LookUp_ID|	Table Identity column	|1| Never call directly|
-|Organisation_ID|Entity ID to allow logial separation between clients/offices etc.|Insert|
+|Organisation_ID|Entity ID to allow logial separation between clients/offices etc. Default of 1 as Ultimate Parent Organisation|Insert|
 |LookUp_Name|Logical name of the reference data entity|'Environment'|Insert|	
 |LookUp_Record_ID|Integer key relative to that LOOKUP_NAME. Starts at one for each Reference Data Entity. Can be controlled by a sequence|Insert|1|
 |LookUp_Value|Actual value to be held|'Prod'|Insert|
