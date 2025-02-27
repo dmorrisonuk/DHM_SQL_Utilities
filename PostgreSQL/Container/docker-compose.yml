@@ -1,0 +1,46 @@
+services: 
+  # pgAdmin
+  pgadmin:
+     container_name: pgadmin_met
+     image: dpage/pgadmin4
+     environment:
+       - PGADMIN_DEFAULT_EMAIL=pgadmin4@pgadmin.org
+       - PGADMIN_DEFAULT_PASSWORD=postgres
+       - PGADMIN_CONFIG_SERVER_MODE=False
+       - PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED=False
+     ports:
+       - "55555:80"
+     networks:
+       postgres_net:
+     depends_on:
+       - postgres
+     volumes:
+       - pgadmin_data:/var/lib/pgadmin
+       - pgadmin_logs:/var/log/pgadmin
+       - pgadmin_config:/etc/pgadmin
+       - ./servers.json:/pgadmin4/servers.json
+  # Postgres
+  postgres:
+    image: postgres:latest
+    container_name: postgres_met
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    volumes: 
+       - ./docker/postgres:/docker-entrypoint-initdb.d    
+    ports:
+      - "5432:5432"
+    networks:
+      postgres_net:
+networks:
+ postgres_net:
+volumes:
+  postgres_data:
+  postgres_logs:
+  postgres_config:
+  pgadmin_data:
+  pgadmin_logs:
+  pgadmin_config:
+
+
