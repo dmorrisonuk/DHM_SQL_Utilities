@@ -71,7 +71,7 @@ CREATE VIEW Mgmt.vw_LookUps as
 				Is_Skeleton	
 FROM 		Mgmt.LookUps
 WHERE  		DB_Is_Deleted is false
-)
+);
 
 
 

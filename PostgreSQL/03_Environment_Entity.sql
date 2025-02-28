@@ -26,4 +26,4 @@ FROM 		Mgmt.LookUps
 WHERE  		DB_Is_Deleted is false
 AND LookUp_Name = 'Environment'
 AND Is_Current is True
-)
+);
