@@ -1,7 +1,7 @@
 services: 
   # pgAdmin
   pgadmin:
-     container_name: pgadmin_met
+     container_name: pgadmin
      image: dpage/pgadmin4
      environment:
        - PGADMIN_DEFAULT_EMAIL=pgadmin4@pgadmin.org
@@ -9,7 +9,7 @@ services:
        - PGADMIN_CONFIG_SERVER_MODE=False
        - PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED=False
      ports:
-       - "55555:80"
+       - "5050:80"
      networks:
        postgres_net:
      depends_on:
@@ -22,7 +22,7 @@ services:
   # Postgres
   postgres:
     image: postgres:latest
-    container_name: postgres_met
+    container_name: postgres
     environment:
       POSTGRES_DB: mydb
       POSTGRES_USER: myuser
