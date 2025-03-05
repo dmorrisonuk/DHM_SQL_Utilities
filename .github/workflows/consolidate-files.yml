@@ -20,9 +20,11 @@ jobs:
         cat PostgreSQL/SQL_Scripts/* > PostgreSQL/Container/docker/postgres/002-init.sql
 
     - name: Commit changes
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACTIONS_PAT }}
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git add PostgreSQL/Container/docker/postgres/002-init.sql
         git commit -m 'Consolidate SQL scripts on commit to dev_branch or main'
-        git push
+        git push https://x-access-token:${{ secrets.ACTIONS_PAT }}@github.com/${{ github.repository }}.git
