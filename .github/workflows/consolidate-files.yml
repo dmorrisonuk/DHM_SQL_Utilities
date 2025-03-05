@@ -16,7 +16,7 @@ jobs:
     - name: Consolidate SQL scripts
       run: |
         mkdir -p Consolidated_SQL_Scripts
-        cat PostgreSQL/SQL\ Scripts/* > Consolidated_SQL_Scripts/combined_scripts.sql
+        cat PostgreSQL/SQL_Scripts/* > combined_scripts.sql
 
     - name: Commit changes
       run: |
