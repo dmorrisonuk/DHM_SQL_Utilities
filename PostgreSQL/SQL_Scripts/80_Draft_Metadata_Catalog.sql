@@ -22,7 +22,7 @@ CREATE TABLE Mgmt.Roles
   Constraint "Role_ID" PRIMARY KEY (Role_ID)
 );
 
-
+-- Insert Skeleton Role 
 Insert into Mgmt.Roles (Role_Description, Role_Permissions, Created_By_User_ID, Is_Skeleton)
 Values ('Default Role', 'None', 1, True);
 

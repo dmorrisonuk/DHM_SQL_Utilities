@@ -19,7 +19,9 @@ This script will:
 1. Create a network called postgres_net
 2. Create a container for Postgres (latest version) on port 5432
 3. Create a container for pgadmin on external port 5050
-4. Create volumes for both Postgres and pgAdmin to enable persistence. 
+4. Create volumes for both Postgres and pgAdmin to enable persistence
+5. Load all database objects in to the Postgres DB
+6. Configure the database in pgadmin
 
 <br>
 
