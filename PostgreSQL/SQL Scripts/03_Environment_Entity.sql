@@ -1,3 +1,9 @@
+/*******************************************************************\
+| 	Environment Entity is an example of holding an entity in 		|
+|		LookUps Table												|
+\*******************************************************************/
+
+
 INSERT INTO mgmt.lookups(
 	organisation_id, lookup_name, lookup_record_id, lookup_value, is_current, version_key, display_order, ref_entity)
 	VALUES	
