@@ -3,7 +3,7 @@ name: Consolidate Files
 on:
   push:
     branches:
-      - dev
+      - dev_branch
 
 jobs:
   consolidate:
