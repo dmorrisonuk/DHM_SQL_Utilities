@@ -1,0 +1,27 @@
+name: Consolidate SQL Scripts
+
+on:
+  push:
+    branches:
+      - dev_branch
+
+jobs:
+  consolidate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Consolidate SQL scripts
+      run: |
+        mkdir -p Consolidated_SQL_Scripts
+        cat PostgreSQL/SQL\ Scripts/* > Consolidated_SQL_Scripts/combined_scripts.sql
+
+    - name: Commit changes
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add Consolidated_SQL_Scripts/combined_scripts.sql
+        git commit -m 'Consolidate SQL scripts on merge to main'
+        git push
