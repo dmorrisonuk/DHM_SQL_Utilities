@@ -27,6 +27,7 @@ CREATE TABLE Mgmt.LookUps
 );
 
 
+
 /* Constaints - Organisation_ID  and App_User_ID */
 ALTER TABLE Mgmt.LookUps ADD CONSTRAINT FK_LookUps__App_User
   FOREIGN KEY (Created_By_User_ID) REFERENCES Mgmt.App_User (App_User_ID);

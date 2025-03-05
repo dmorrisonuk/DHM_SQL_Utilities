@@ -1,0 +1,32 @@
+name: Consolidate Files
+
+on:
+  push:
+    branches:
+      - dev_branch
+
+jobs:
+  consolidate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.11'
+
+    - name: Consolidate files
+      run: |
+        mkdir -p destination_folder
+        cat PostgreSQL/SQL\ Scripts/ > PostgreSQL/002-init.sql
+
+    - name: Commit changes
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add destination_folder/combined_file.txt
+        git commit -m 'Consolidate files on merge to main'
+        git push
