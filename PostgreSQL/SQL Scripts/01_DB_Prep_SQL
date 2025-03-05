@@ -24,13 +24,11 @@ CREATE TABLE Mgmt.Organisation
   DB_Created_By        	VARCHAR(255)  NULL			DEFAULT  'MISSING',
   DB_Is_Deleted         	BOOLEAN  NULL 					DEFAULT  FALSE,
   DB_Last_Updated_Date   	TIMESTAMP  NULL 				DEFAULT  NOW(),
-  DB_Last_Updated_By   	VARCHAR(255)  NULL 			DEFAULT  'MISSING'
+  DB_Last_Updated_By   	VARCHAR(255)  NULL 			DEFAULT  'MISSING',
+  Constraint "Organisation_ID" PRIMARY KEY (Organisation_ID)
  )
 ;
 
-
-ALTER TABLE Mgmt.Organisation ADD CONSTRAINT Company_ID
-  PRIMARY KEY (Organisation_ID);
 
 ALTER TABLE Mgmt.Organisation ADD CONSTRAINT FK_Organisation__Organisation
   FOREIGN KEY (Parent_Organisation_ID) REFERENCES Mgmt.Organisation (Organisation_ID);
@@ -45,6 +43,9 @@ INSERT INTO Mgmt.Organisation(company_name, parent_organisation_id, inherit_flg)
 	        ('Sub-Co', 1, False);
 
 CREATE UNIQUE INDEX IX_OrgName_Current on Mgmt.Organisation (Company_Name) WHERE Is_Current = TRUE;
+
+
+
 
 
 
@@ -69,10 +70,9 @@ CREATE TABLE Mgmt.App_User
 	DB_Is_Deleted         	BOOLEAN  NULL 					DEFAULT  FALSE,
 	DB_Last_Updated_Date   	TIMESTAMP  NULL 				DEFAULT  NOW(),
 	DB_Last_Updated_By   	VARCHAR(255)  NULL 			DEFAULT  'MISSING'
+  Constraint "App_User_ID" PRIMARY KEY (App_User_ID)
 )
 ;
-
-ALTER TABLE Mgmt.App_User ADD CONSTRAINT User_ID   PRIMARY KEY (App_User_ID) ;
 
 
 COMMENT ON COLUMN Mgmt.App_User.User_Cred_SO IS E'Used to hold secondary credential ID (but not password) for a secret manager / SSO provider.';
@@ -83,7 +83,7 @@ COMMENT ON COLUMN Mgmt.App_User.Last_Modified_By IS E'Captures Users acting on o
 CREATE UNIQUE INDEX IX_User_Name_Current on Mgmt.App_User (User_Name) WHERE Is_Current = TRUE;
 
 /* Insert Skeleton Admin User */
-INSERT INTO Mgmt.App_User(	user_name) 
+INSERT INTO Mgmt.App_User	user_name) 
 VALUES ('Administrator1');
 
 /* Add Organisation <-> App_User FKs */
