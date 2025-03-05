@@ -1,4 +1,5 @@
-BEGIN;
+
+
 /* Create Mgmt schema */
 
 CREATE SCHEMA Mgmt
@@ -23,13 +24,11 @@ CREATE TABLE Mgmt.Organisation
   DB_Created_By        	VARCHAR(255)  NULL			DEFAULT  'MISSING',
   DB_Is_Deleted         	BOOLEAN  NULL 					DEFAULT  FALSE,
   DB_Last_Updated_Date   	TIMESTAMP  NULL 				DEFAULT  NOW(),
-  DB_Last_Updated_By   	VARCHAR(255)  NULL 			DEFAULT  'MISSING'
+  DB_Last_Updated_By   	VARCHAR(255)  NULL 			DEFAULT  'MISSING',
+  Constraint "Organisation_ID" PRIMARY KEY (Organisation_ID)
  )
 ;
 
-
-ALTER TABLE Mgmt.Organisation ADD CONSTRAINT Company_ID
-  PRIMARY KEY (Organisation_ID);
 
 ALTER TABLE Mgmt.Organisation ADD CONSTRAINT FK_Organisation__Organisation
   FOREIGN KEY (Parent_Organisation_ID) REFERENCES Mgmt.Organisation (Organisation_ID);
@@ -44,6 +43,9 @@ INSERT INTO Mgmt.Organisation(company_name, parent_organisation_id, inherit_flg)
 	        ('Sub-Co', 1, False);
 
 CREATE UNIQUE INDEX IX_OrgName_Current on Mgmt.Organisation (Company_Name) WHERE Is_Current = TRUE;
+
+
+
 
 
 
@@ -68,10 +70,9 @@ CREATE TABLE Mgmt.App_User
 	DB_Is_Deleted         	BOOLEAN  NULL 					DEFAULT  FALSE,
 	DB_Last_Updated_Date   	TIMESTAMP  NULL 				DEFAULT  NOW(),
 	DB_Last_Updated_By   	VARCHAR(255)  NULL 			DEFAULT  'MISSING'
+  Constraint "App_User_ID" PRIMARY KEY (App_User_ID)
 )
 ;
-
-ALTER TABLE Mgmt.App_User ADD CONSTRAINT User_ID   PRIMARY KEY (App_User_ID) ;
 
 
 COMMENT ON COLUMN Mgmt.App_User.User_Cred_SO IS E'Used to hold secondary credential ID (but not password) for a secret manager / SSO provider.';
@@ -82,7 +83,7 @@ COMMENT ON COLUMN Mgmt.App_User.Last_Modified_By IS E'Captures Users acting on o
 CREATE UNIQUE INDEX IX_User_Name_Current on Mgmt.App_User (User_Name) WHERE Is_Current = TRUE;
 
 /* Insert Skeleton Admin User */
-INSERT INTO Mgmt.App_User(	user_name) 
+INSERT INTO Mgmt.App_User	user_name) 
 VALUES ('Administrator1');
 
 /* Add Organisation <-> App_User FKs */
@@ -92,9 +93,13 @@ ALTER TABLE Mgmt.Organisation ADD CONSTRAINT FK_Organisation__App_User
 
 ALTER TABLE Mgmt.Organisation ADD CONSTRAINT FK_Organisation__App_User2
   FOREIGN KEY (Updated_by_User_ID) REFERENCES Mgmt.App_User (App_User_ID);
-  
-  
-  COMMIT;
+
+
+
+
+
+
+
 
 
 
@@ -126,6 +131,7 @@ CREATE TABLE Mgmt.LookUps
 );
 
 
+
 /* Constaints - Organisation_ID  and App_User_ID */
 ALTER TABLE Mgmt.LookUps ADD CONSTRAINT FK_LookUps__App_User
   FOREIGN KEY (Created_By_User_ID) REFERENCES Mgmt.App_User (App_User_ID);
@@ -149,9 +155,9 @@ INSERT INTO Mgmt.LookUps(
 
 
 /** General Consumption View************************************************************\
-|	Allows any entity to be viewed, but excludes: 										                    |
-|		* DB_Is_Deleted = 1																                                  |
-|	Generally most useful for a reporting layer											                      |
+|	Allows any entity to be viewed, but excludes: 										|
+|		* DB_Is_Deleted = 1																|
+|	Generally most useful for a reporting layer											|
 \***************************************************************************************/ 
 
 
@@ -173,6 +179,36 @@ WHERE  		DB_Is_Deleted is false
 );
 
 
+
+/** Create Entity **********************************************************************\
+| An Entity is the container for any values. 											|
+|																						|
+| An Entity is always created with a sekelton record to capture Entity creation. 		|
+|																						|
+\*************************************************************************************** 
+
+
+
+
+-- PROCEDURE: mgmt.Create_LookUp(character varying[])
+
+-- DROP PROCEDURE IF EXISTS mgmt."Create_LookUp"(character varying[]);
+
+CREATE OR REPLACE PROCEDURE Mgmt.sp_Create_LookUp
+LANGUAGE 'sql'
+AS $BODY$
+SELECT "LookUp_ID"
+	FROM mgmt."Test";
+$BODY$;
+ALTER PROCEDURE mgmt."Select_LookUps"()
+    OWNER TO myuser;
+
+COMMENT ON PROCEDURE mgmt."Create_LookUp"(character varying[])
+    IS 'Logical LookUp Creation';
+*//*******************************************************************\
+| 	Environment Entity is an example of holding an entity in 		|
+|		LookUps Table												|
+\*******************************************************************/
 
 
 INSERT INTO mgmt.lookups(
@@ -203,11 +239,7 @@ FROM 		Mgmt.LookUps
 WHERE  		DB_Is_Deleted is false
 AND LookUp_Name = 'Environment'
 AND Is_Current is True
-);
-
-
-
-INSERT INTO mgmt.lookups(
+);INSERT INTO mgmt.lookups(
 	organisation_id, lookup_name, lookup_record_id, lookup_value, is_current, version_key, note, display_order)
 	VALUES	
 (1,'File_Type',1,'csv',TRUE,1,'',1),
@@ -236,10 +268,217 @@ FROM 		Mgmt.LookUps
 WHERE  		DB_Is_Deleted is false
 AND LookUp_Name = 'File_Type'
 AND Is_Current is True
+)
+
+
+
+/*******************************************************************\
+|                                                                   |   
+|   Create currency table                                           |              
+|   Populate with ISO list                                          |                         
+|   Create exchange rate table (with history)                       |
+|   Populate with exchange rates at _____________                   |
+|                                                                   |                      
+\*******************************************************************/
+
+
+
+-- Create currency table
+CREATE TABLE Mgmt.Currency (
+    Currency_ID             integer NOT NULL GENERATED BY DEFAULT AS IDENTITY,
+    ISO_Currency_Code       VARCHAR(3) NOT NULL,
+    Internal_Currency_Code  VARCHAR(20) NOT NULL DEFAULT 'Not Used',
+    ISO_Currency_Name       VARCHAR(255) NOT NULL,
+    Is_Current              BOOLEAN NOT NULL DEFAULT TRUE,
+    Created_By_User_ID		BIGINT NOT NULL 			DEFAULT 1,
+    Replaced_By_User_ID		BIGINT NOT NULL 			DEFAULT 1,
+	Valid_From		   		TIMESTAMP NOT NULL		    DEFAULT NOW(),
+	Valid_To		  		TIMESTAMP NOT NULL			DEFAULT  '9999-12-31 23:59:59',
+    Is_Skeleton		  		BOOLEAN						DEFAULT  FALSE, -- defaulted to false to simplify buil insert
+    DB_Created_Date     	TIMESTAMP  NULL    			DEFAULT  NOW(),
+    DB_Created_By        	VARCHAR(255)  NULL			DEFAULT  'MISSING',
+    DB_Is_Deleted         	BOOLEAN  NULL 				DEFAULT  FALSE,
+    DB_Last_Updated_Date   	TIMESTAMP  NULL 			DEFAULT  NOW(),
+    DB_Last_Updated_By   	VARCHAR(255)  NULL 			DEFAULT  'MISSING',
+    Constraint "Currency_ID" PRIMARY KEY (Currency_ID)
 );
 
 
+COMMENT ON COLUMN Mgmt.Currency.Internal_Currency_Code IS E'Used where the ISO code has been replaced for internal use.';
 
+
+ALTER TABLE Mgmt.Currency  ADD CONSTRAINT FK_Currency__Users
+  FOREIGN KEY (Created_By_User_ID) REFERENCES Mgmt.App_User (App_User_ID);
+
+ALTER TABLE Mgmt.Currency  ADD CONSTRAINT FK_Currency__Users2
+  FOREIGN KEY (Replaced_By_User_ID) REFERENCES Mgmt.App_User (App_User_ID);
+
+
+CREATE VIEW Mgmt.vw_Currency AS
+SELECT 
+    Currency_ID,
+    ISO_Currency_Code,
+    Internal_Currency_Code,
+    ISO_Currency_Name
+FROM Mgmt.Currency
+WHERE       Is_Current = TRUE
+AND         DB_Is_Deleted = FALSE;
+
+
+/* Created by Co-Pilot - not bad. Automatically picked up the Type 2 behaviour ****\
+
+Had to add the DB_Last_Updated_By and DB_Last_Updated_Date fields to the Proc
+
+ */
+
+CREATE OR REPLACE PROCEDURE Mgmt.Add_Currency(
+    p_ISO_Currency_Code VARCHAR(3),
+    p_ISO_Currency_Name VARCHAR(255),
+    p_Internal_Currency_Code VARCHAR(20) DEFAULT 'Not Used',
+    p_Update BOOLEAN DEFAULT FALSE
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM Mgmt.Currency WHERE ISO_Currency_Code = p_ISO_Currency_Code AND Is_Current = TRUE AND DB_Is_Deleted = FALSE) THEN
+        IF p_Update THEN
+            UPDATE Mgmt.Currency
+            SET Is_Current = FALSE,
+                Valid_To = NOW(),
+                DB_Is_Deleted = TRUE,
+                DB_Last_Updated_Date = NOW(),
+                DB_Last_Updated_By = Current_User
+            WHERE ISO_Currency_Code = p_ISO_Currency_Code AND Is_Current = TRUE AND DB_Is_Deleted = FALSE;
+
+            INSERT INTO Mgmt.Currency (ISO_Currency_Code, ISO_Currency_Name, Internal_Currency_Code)
+            VALUES (p_ISO_Currency_Code, p_ISO_Currency_Name, p_Internal_Currency_Code);
+        ELSE
+            RAISE NOTICE 'Currency % already exists and update is set to FALSE.', p_ISO_Currency_Code;
+        END IF;
+    ELSE
+        INSERT INTO Mgmt.Currency (ISO_Currency_Code, ISO_Currency_Name, Internal_Currency_Code)
+        VALUES (p_ISO_Currency_Code, p_ISO_Currency_Name, p_Internal_Currency_Code);
+    END IF;
+END;
+$$;
+
+
+
+/*** Insert Statements ***/
+
+
+Insert Into Mgmt.Currency (ISO_Currency_Code, ISO_Currency_Name, Is_Skeleton)
+Values
+('XXX','The codes assigned for transactions where no currency is involved', TRUE);
+
+Insert Into Mgmt.Currency (ISO_Currency_Code, ISO_Currency_Name)
+Values
+('AUD', 'Australian Dollar'),
+('USD', 'United States Dollar'),
+('GBP', 'British Pound'),
+('EUR', 'Euro'),
+('NZD', 'New Zealand Dollar'),
+('JPY', 'Japanese Yen'),
+('CAD', 'Canadian Dollar'),
+('CHF', 'Swiss Franc'),
+('SGD', 'Singapore Dollar'),
+('HKD', 'Hong Kong Dollar'),
+('SEK', 'Swedish Krona'),
+('NOK', 'Norwegian Krone'),
+('DKK', 'Danish Krone'),
+('ZAR', 'South African Rand'),
+('INR', 'Indian Rupee'),
+('CNY', 'Chinese Yuan'),
+('THB', 'Thai Baht'),
+('MYR', 'Malaysian Ringgit'),
+('IDR', 'Indonesian Rupiah'),
+('PHP', 'Philippine Peso'),
+('KRW', 'South Korean Won'),
+('VND', 'Vietnamese Dong'),
+('TWD', 'Taiwan Dollar'),
+('SAR', 'Saudi Riyal'),
+('AED', 'United Arab Emirates Dirham'),
+('QAR', 'Qatari Riyal'),
+('OMR', 'Omani Rial'),
+('KWD', 'Kuwaiti Dinar'),
+('BHD', 'Bahraini Dinar'),
+('JOD', 'Jordanian Dinar'),
+('ILS', 'Israeli Shekel'),
+('EGP', 'Egyptian Pound'),
+('LKR', 'Sri Lankan Rupee'),
+('PKR', 'Pakistani Rupee'),
+('BDT', 'Bangladeshi Taka'),
+('NPR', 'Nepalese Rupee'),
+('MVR', 'Maldivian Rufiyaa'),
+('MUR', 'Mauritian Rupee'),
+('SCR', 'Seychellois Rupee'),
+('KES', 'Kenyan Shilling'),
+('UGX', 'Ugandan Shilling'),
+('TZS', 'Tanzanian Shilling'),
+('ZMW', 'Zambian Kwacha'),
+('GHS', 'Ghanaian Cedi'),
+('NGN', 'Nigerian Naira'),
+('ZAR', 'South African Rand'),
+('MAD', 'Moroccan Dirham'),
+('DZD', 'Algerian Dinar'),
+('TND', 'Tunisian Dinar'),
+('LYD', 'Libyan Dinar');
+
+
+
+
+/*******************************************************************\
+|                                                                   |
+|   Create exchange rate table, which holds the Indirect_Quote      |
+|   for each currency pair.                                         |
+|                                                                   |                                      
+|   This means that value in the "Source" or currency can           |
+|   be MULTIPLIED by the exchange rate to get the value in the      |
+|   "Target" currency                                               |
+|
+\******************************************************************/
+
+
+
+Create Table Mgmt.Exchange_Rates
+(Exchange_Rate_ID        INTEGER NOT NULL GENERATED BY DEFAULT AS IDENTITY,
+Source_Currency_Code      VARCHAR(3) NOT NULL,  -- no default, should always be specified
+Target_Currency_Code      VARCHAR(3) NOT NULL,  -- no default, should always be specified
+Indirect_Quote            NUMERIC(20,10) NOT NULL,
+Is_Current              BOOLEAN NOT NULL            DEFAULT TRUE,
+Created_By_User_ID		BIGINT NOT NULL 			DEFAULT 1,
+Replaced_By_User_ID		BIGINT NOT NULL 			DEFAULT 1,
+Valid_From		   		TIMESTAMP NOT NULL		    DEFAULT NOW(),
+Valid_To		  		TIMESTAMP NOT NULL			DEFAULT  '9999-12-31 23:59:59',
+Is_Skeleton		  		BOOLEAN						DEFAULT  FALSE, -- defaulted to false to simplify buil insert
+DB_Created_Date     	TIMESTAMP  NULL    			DEFAULT  NOW(),
+DB_Created_By        	VARCHAR(255)  NULL			DEFAULT  'MISSING',
+DB_Is_Deleted         	BOOLEAN  NULL 				DEFAULT  FALSE,
+DB_Last_Updated_Date   	TIMESTAMP  NULL 			DEFAULT  NOW(),
+DB_Last_Updated_By   	VARCHAR(255)  NULL 			DEFAULT  'MISSING',
+Constraint "Exchange_Rate_ID" PRIMARY KEY (Exchange_Rate_ID)
+);  
+
+
+
+ALTER TABLE Mgmt.Exchange_Rates ADD CONSTRAINT FK_Exchange_Rate__Users
+  FOREIGN KEY (Created_By_User_ID) REFERENCES Mgmt.App_User (App_User_ID);
+
+ALTER TABLE Mgmt.Exchange_Rates ADD CONSTRAINT FK_Exchange_Rate__Users2
+  FOREIGN KEY (Replaced_By_User_ID	) REFERENCES Mgmt.App_User (App_User_ID);
+
+
+
+ALTER TABLE Mgmt.Exchange_Rates ADD CONSTRAINT FK_Exchange_Rate__Currency
+  FOREIGN KEY (Source_Currency_Code ) REFERENCES Mgmt.Currency (ISO_Currency_Code);
+
+ALTER TABLE Mgmt.Exchange_Rates ADD CONSTRAINT FK_Exchange_Rate__Currency2
+  FOREIGN KEY (Target_Currency_Code) REFERENCES Mgmt.Currency (ISO_Currency_Code);  
+
+-- Create the skeleton record
+Insert Into Mgmt.Exchange_Rates (Source_Currency_Code, Target_Currency_Code, Indirect_Quote,    Is_Skeleton)
+Values
+('XXX','XXX', '1.00', TRUE);
 
 
 /* Role Model */
@@ -250,11 +489,25 @@ CREATE TABLE Mgmt.Roles
 (
   Role_ID integer NOT NULL GENERATED BY DEFAULT AS IDENTITY,
   Role_Description varchar(2000) DEFAULT 'MISSING' NOT NULL,
-  Role_Permissions varchar(2000) DEFAULT 'None' NOT NULL
+  Role_Permissions varchar(2000) DEFAULT 'None' NOT NULL,
+  Created_By_User_ID bigint DEFAULT 1 NOT NULL,
+  Created_Date timestamp DEFAULT NOW() NOT NULL,
+  Is_Current boolean DEFAULT TRUE NOT NULL,
+  Updated_by_User_ID bigint DEFAULT 1 NOT NULL,
+  Updated_Date timestamp DEFAULT '9999-12-31 23:59:59' NOT NULL,
+  Is_Skeleton boolean DEFAULT FALSE NOT NULL,
+  DB_Created_Date     	TIMESTAMP  NULL    			DEFAULT  NOW(),
+  DB_Created_By        	VARCHAR(255)  NULL			DEFAULT  'MISSING',
+  DB_Is_Deleted         	BOOLEAN  NULL 					DEFAULT  FALSE,
+  DB_Last_Updated_Date   	TIMESTAMP  NULL 				DEFAULT  NOW(),
+  DB_Last_Updated_By   	VARCHAR(255)  NULL 			DEFAULT  'MISSING',
+  Constraint "Role_ID" PRIMARY KEY (Role_ID)
 );
 
-ALTER TABLE Mgmt.Roles ADD CONSTRAINT Role_ID
-  PRIMARY KEY (Role_ID);
+
+Insert into Mgmt.Roles (Role_Description, Role_Permissions, Created_By_User_ID, Is_Skeleton)
+Values ('Default Role', 'None', 1, True);
+
 
 
 CREATE TABLE Mgmt.User_Permissions
@@ -384,8 +637,8 @@ CREATE TABLE Mgmt.Data_Object
   Source_ID bigint DEFAULT 1 NOT NULL,
   Created_By_ID bigint DEFAULT 1 NOT NULL,
   Object_Created_Date date DEFAULT NOW() NOT NULL
-);
-
+)
+;
 
 COMMENT ON TABLE Mgmt.Data_Object IS E'Details of the specific object being referenced - e.g. a Table Name in a database, tab name in Excel';
 COMMENT ON COLUMN Mgmt.Data_Object.Created_By_ID IS E'User who created this Object Version';
@@ -405,8 +658,8 @@ CREATE TABLE Mgmt.Source_Fields
   Data_Object_ID bigint DEFAULT 1 NOT NULL,
   Created_By_ID bigint DEFAULT 1 NOT NULL,
   Addtl_Att_IDs bigint
-);
-
+)
+;
 
 COMMENT ON TABLE Mgmt.Source_Fields IS E'Individual PHYSICAL fields/columns related to object versions. \nBridge Table\n\nAlso allows referencing to Logical Attributes. \nShould be expanded to capture history of description & attribute tags in the physical model. \n';
 COMMENT ON COLUMN Mgmt.Source_Fields.Field_Name IS E'256 character limit as default - exceeds most paltforms: \n\nPostgresql: 63 \nSQL Server 2022: 128';
