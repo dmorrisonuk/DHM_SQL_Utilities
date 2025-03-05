@@ -16,7 +16,7 @@ jobs:
     - name: Consolidate SQL scripts
       run: |
         mkdir -p Consolidated_SQL_Scripts
-        cat PostgreSQL/SQL_Scripts/* > combined_scripts.sql
+        cat PostgreSQL/SQL_Scripts/* > PostgreSQL/Container/docker/postgres/002-init.sql
 
     - name: Commit changes
       run: |
