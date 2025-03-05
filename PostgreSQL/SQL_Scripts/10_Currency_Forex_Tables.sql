@@ -22,9 +22,9 @@ CREATE TABLE Mgmt.Currency (
     Is_Current              BOOLEAN NOT NULL DEFAULT TRUE,
     Created_By_User_ID		BIGINT NOT NULL 			DEFAULT 1,
     Replaced_By_User_ID		BIGINT NOT NULL 			DEFAULT 1,
-	Valid_From		   		TIMESTAMP NOT NULL		    DEFAULT NOW(),
-	Valid_To		  		TIMESTAMP NOT NULL			DEFAULT  '9999-12-31 23:59:59',
-    Is_Skeleton		  		BOOLEAN						DEFAULT  FALSE, -- defaulted to false to simplify buil insert
+	  Valid_From		   		  TIMESTAMP NOT NULL		    DEFAULT NOW(),
+	  Valid_To		  		    TIMESTAMP NOT NULL			DEFAULT  '9999-12-31 23:59:59',
+    Is_Skeleton		  		  BOOLEAN						DEFAULT  FALSE, -- defaulted to false to simplify buil insert
     DB_Created_Date     	TIMESTAMP  NULL    			DEFAULT  NOW(),
     DB_Created_By        	VARCHAR(255)  NULL			DEFAULT  'MISSING',
     DB_Is_Deleted         	BOOLEAN  NULL 				DEFAULT  FALSE,
