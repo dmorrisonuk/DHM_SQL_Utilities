@@ -95,6 +95,21 @@ An accepted deviation is the case of User_IDs where we want to indicate the role
 - Deleted_By_ID
 
 
+## Stored Procedures - Additional Prefixes
+
+Generally for every table, stored proceedures should be created to: 
+1. Add or Update a record
+2. Logically delete a record (app side- using Is_Current Flags)
+
+|Prefix 1|Prefix 2|Combined|Description|
+|'-----|'-----|'-----|'-----|
+|sp_|AddU|sp_AddU|Will Add or Update a record|
+|sp_|LDel|sp_LDel|Will logically delete a record|
+
+
+
+
+
 
 ## Trigger Object Suffixes
 
