@@ -146,17 +146,27 @@ The specifics of datatype and default value vary by platform and can be found in
 
 <br> 
 
-|Column Name|Purpose|
-|:----|:--------|
-|DB_Created_By||
-|DB_Created_Date||
-|DB_Is_Deleted|Boolean Flag, allowing logical deletion at the |
-|DB_Last_Updated_By||
-|DB_Last_Updated_Date||
-
+|Column Name|Purpose|Type|Default Value|
+|:----|:--------|:-------|:--------|
+|DB_Created_By|||CURRENT_USER|
+|DB_Created_Date|Immutable record of when this record was first written to the database|Timestamp with Time Zone|NOW()|
+|DB_Is_Deleted|Boolean Flag, allowing logical deletion at the Database level|Boolean|False|
+|DB_Last_Updated_By|||CURRENT_USER|
+|DB_Last_Updated_Date|Immutable record of last change to this record at database layer|Timestamp with Time Zone|NOW()|
 
 <br>
 
+For tables in Postgres, the DDL for these columns is: 
+
+```
+  DB_Created_Date     	TIMESTAMP WITH TIME ZONE  NULL  DEFAULT  NOW(),
+  DB_Created_By        	VARCHAR(255)              NULL	DEFAULT  Current_User,
+  DB_Is_Deleted         BOOLEAN                   NULL 	DEFAULT  FALSE,
+  DB_Last_Updated_Date  TIMESTAMP WITH TIME ZONE  NULL 	DEFAULT  NOW(),
+  DB_Last_Updated_By   	VARCHAR(255)              NULL 	DEFAULT  Current_User,
+  ```
+
+<br> 
 
 
 

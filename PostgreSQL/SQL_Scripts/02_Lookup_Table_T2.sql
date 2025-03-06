@@ -18,11 +18,11 @@ CREATE TABLE Mgmt.LookUps
 	Valid_From		   		TIMESTAMP NOT NULL		    DEFAULT NOW(),
 	Valid_To		  		TIMESTAMP NOT NULL			DEFAULT  '9999-12-31 23:59:59',
 	Is_Skeleton		  		BOOLEAN						DEFAULT 	TRUE,
-	DB_Created_Date     	TIMESTAMP  NULL    			DEFAULT  NOW(),
-	DB_Created_By        	VARCHAR(255)  NULL			DEFAULT  'MISSING',
-	DB_Is_Deleted         	BOOLEAN  NULL 					DEFAULT  FALSE,
-	DB_Last_Updated_Date   	TIMESTAMP  NULL 				DEFAULT  NOW(),
-	DB_Last_Updated_By   	VARCHAR(255)  NULL 			DEFAULT  'MISSING',
+   DB_Created_Date     		TIMESTAMP WITH TIME ZONE  NULL  DEFAULT  NOW(),
+   DB_Created_By        	VARCHAR(255)              NULL	DEFAULT  Current_User,
+   DB_Is_Deleted         	BOOLEAN                   NULL 	DEFAULT  FALSE,
+   DB_Last_Updated_Date  	IMESTAMP WITH TIME ZONE  NULL 	DEFAULT  NOW(),
+   DB_Last_Updated_By   	VARCHAR(255)              NULL 	DEFAULT  Current_User,
 	Constraint "LookUp_ID" PRIMARY KEY (LookUp_ID)
 );
 
