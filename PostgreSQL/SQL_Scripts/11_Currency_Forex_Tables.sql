@@ -1,11 +1,8 @@
 
-
-
-
 /*******************************************************************\
 |                                                                   |   
 |   Create currency table                                           |              
-|   Populate with ISO list                                          |                         
+|   Populate with ISO Currency list                                 |                         
 |   Create exchange rate table (with history)                       |
 |   Populate with exchange rates at _____________                   |
 |                                                                   |                      
@@ -19,23 +16,25 @@ CREATE TABLE Mgmt.Currency (
     ISO_Currency_Code       VARCHAR(3) NOT NULL,
     Internal_Currency_Code  VARCHAR(20) NOT NULL DEFAULT 'Not Used',
     ISO_Currency_Name       VARCHAR(255) NOT NULL,
+    Is_Available          BOOLEAN NOT NULL DEFAULT TRUE,
     Is_Current              BOOLEAN NOT NULL DEFAULT TRUE,
     Created_By_User_ID		BIGINT NOT NULL 			DEFAULT 1,
     Replaced_By_User_ID		BIGINT NOT NULL 			DEFAULT 1,
 	  Valid_From		   		  TIMESTAMP NOT NULL		    DEFAULT NOW(),
 	  Valid_To		  		    TIMESTAMP NOT NULL			DEFAULT  '9999-12-31 23:59:59',
     Is_Skeleton		  		  BOOLEAN						DEFAULT  FALSE, -- defaulted to false to simplify buil insert
-    DB_Created_Date     	TIMESTAMP  NULL    			DEFAULT  NOW(),
-    DB_Created_By        	VARCHAR(255)  NULL			DEFAULT  'MISSING',
-    DB_Is_Deleted         	BOOLEAN  NULL 				DEFAULT  FALSE,
-    DB_Last_Updated_Date   	TIMESTAMP  NULL 			DEFAULT  NOW(),
-    DB_Last_Updated_By   	VARCHAR(255)  NULL 			DEFAULT  'MISSING',
+  DB_Created_Date     	TIMESTAMP WITH TIME ZONE  NULL  DEFAULT  NOW(),
+  DB_Created_By        	VARCHAR(255)              NULL	DEFAULT  Current_User,
+  DB_Is_Deleted         BOOLEAN                   NULL 	DEFAULT  FALSE,
+  DB_Last_Updated_Date  TIMESTAMP WITH TIME ZONE  NULL 	DEFAULT  NOW(),
+  DB_Last_Updated_By   	VARCHAR(255)              NULL 	DEFAULT  Current_User,
     Constraint "Currency_ID" PRIMARY KEY (Currency_ID)
 );
 
 
 COMMENT ON COLUMN Mgmt.Currency.Internal_Currency_Code IS E'Used where the ISO code has been replaced for internal use.';
-
+COMMENT ON COLUMN Mgmt.Currency.Is_Available            IS E'Is_current shows whether this is the current record for this currency.';
+COMMENT ON COLUMN Mgmt.Currency.Is_Available            IS E'Is_available allows pre-seeded lists to be suppressed in the application layer.';
 
 ALTER TABLE Mgmt.Currency  ADD CONSTRAINT FK_Currency__Users
   FOREIGN KEY (Created_By_User_ID) REFERENCES Mgmt.App_User (App_User_ID);
@@ -52,6 +51,7 @@ SELECT
     ISO_Currency_Name
 FROM Mgmt.Currency
 WHERE       Is_Current = TRUE
+AND         Is_Available = TRUE
 AND         DB_Is_Deleted = FALSE;
 
 
@@ -91,6 +91,9 @@ BEGIN
     END IF;
 END;
 $$;
+
+
+
 
 
 
@@ -181,11 +184,11 @@ Replaced_By_User_ID		BIGINT NOT NULL 			DEFAULT 1,
 Valid_From		   		TIMESTAMP NOT NULL		    DEFAULT NOW(),
 Valid_To		  		TIMESTAMP NOT NULL			DEFAULT  '9999-12-31 23:59:59',
 Is_Skeleton		  		BOOLEAN						DEFAULT  FALSE, -- defaulted to false to simplify buil insert
-DB_Created_Date     	TIMESTAMP  NULL    			DEFAULT  NOW(),
-DB_Created_By        	VARCHAR(255)  NULL			DEFAULT  'MISSING',
-DB_Is_Deleted         	BOOLEAN  NULL 				DEFAULT  FALSE,
-DB_Last_Updated_Date   	TIMESTAMP  NULL 			DEFAULT  NOW(),
-DB_Last_Updated_By   	VARCHAR(255)  NULL 			DEFAULT  'MISSING',
+DB_Created_Date     	TIMESTAMP WITH TIME ZONE  NULL  DEFAULT  NOW(),
+DB_Created_By        	VARCHAR(255)              NULL	DEFAULT  Current_User,
+DB_Is_Deleted         BOOLEAN                   NULL 	DEFAULT  FALSE,
+DB_Last_Updated_Date  TIMESTAMP WITH TIME ZONE  NULL 	DEFAULT  NOW(),
+DB_Last_Updated_By   	VARCHAR(255)              NULL 	DEFAULT  Current_User,
 Constraint "Exchange_Rate_ID" PRIMARY KEY (Exchange_Rate_ID)
 );  
 
