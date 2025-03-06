@@ -20,11 +20,11 @@ CREATE TABLE Mgmt.Organisation
   Is_Current boolean DEFAULT TRUE,
   Updated_by_User_ID bigint DEFAULT 1 NOT NULL,
   Updated_Date timestamp DEFAULT '9999-12-31 23:59:59' NOT NULL,
-  DB_Created_Date     	TIMESTAMP  NULL    			DEFAULT  NOW(),
-  DB_Created_By        	VARCHAR(255)  NULL			DEFAULT  'MISSING',
-  DB_Is_Deleted         	BOOLEAN  NULL 					DEFAULT  FALSE,
-  DB_Last_Updated_Date   	TIMESTAMP  NULL 				DEFAULT  NOW(),
-  DB_Last_Updated_By   	VARCHAR(255)  NULL 			DEFAULT  'MISSING',
+  DB_Created_Date     	TIMESTAMP WITH TIME ZONE  NULL  DEFAULT  NOW(),
+  DB_Created_By        	VARCHAR(255)              NULL	DEFAULT  Current_User,
+  DB_Is_Deleted         BOOLEAN                   NULL 	DEFAULT  FALSE,
+  DB_Last_Updated_Date  TIMESTAMP WITH TIME ZONE  NULL 	DEFAULT  NOW(),
+  DB_Last_Updated_By   	VARCHAR(255)              NULL 	DEFAULT  Current_User,
   Constraint "Organisation_ID" PRIMARY KEY (Organisation_ID)
  )
 ;
@@ -65,11 +65,11 @@ CREATE TABLE Mgmt.App_User
   Login_Allowed boolean DEFAULT True,
   Last_Modified_By bigint DEFAULT 1 NOT NULL,
   Is_Current boolean DEFAULT True ,
-  DB_Created_Date     	TIMESTAMP  NULL    			DEFAULT  NOW(),
-	DB_Created_By        	VARCHAR(255)  NULL			DEFAULT  'MISSING',
-	DB_Is_Deleted         	BOOLEAN  NULL 					DEFAULT  FALSE,
-	DB_Last_Updated_Date   	TIMESTAMP  NULL 				DEFAULT  NOW(),
-	DB_Last_Updated_By   	VARCHAR(255)  NULL 			DEFAULT  'MISSING'
+  DB_Created_Date     	TIMESTAMP WITH TIME ZONE  NULL  DEFAULT  NOW(),
+  DB_Created_By        	VARCHAR(255)              NULL	DEFAULT  Current_User,
+  DB_Is_Deleted         BOOLEAN                   NULL 	DEFAULT  FALSE,
+  DB_Last_Updated_Date  TIMESTAMP WITH TIME ZONE  NULL 	DEFAULT  NOW(),
+  DB_Last_Updated_By   	VARCHAR(255)              NULL 	DEFAULT  Current_User,
   Constraint "App_User_ID" PRIMARY KEY (App_User_ID)
 )
 ;
