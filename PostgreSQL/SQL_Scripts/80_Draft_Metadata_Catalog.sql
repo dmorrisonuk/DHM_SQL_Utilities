@@ -39,13 +39,15 @@ CREATE TABLE Mgmt.User_Permissions
   DB_Is_Deleted         BOOLEAN                   NULL 	DEFAULT  FALSE,
   DB_Last_Updated_Date  TIMESTAMP WITH TIME ZONE  NULL 	DEFAULT  NOW(),
   DB_Last_Updated_By   	VARCHAR(255)              NULL 	DEFAULT  Current_User,
+    Constraint "Company_Users_ID" PRIMARY KEY (Company_Users_ID)
 );
+
+-- Insert Skeleton User_Permissions
+Insert into Mgmt.User_Permissions (Organisation_ID, App_User_ID, Role_ID) 
+Values (1, 1, 1);
 
 
 COMMENT ON TABLE Mgmt.User_Permissions IS E'A user can have more than one role, in more than one companies';
-
-ALTER TABLE Mgmt.User_Permissions ADD CONSTRAINT Company_Users_ID
-  PRIMARY KEY (Company_Users_ID);
 
 
 

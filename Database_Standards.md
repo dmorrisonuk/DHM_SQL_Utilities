@@ -103,7 +103,7 @@ Generally for every table, stored proceedures should be created to:
 
 |Prefix 1|Prefix 2|Combined|Description|
 |'-----|'-----|'-----|'-----|
-|sp_|AddU|sp_AddU|Will Add or Update a record|
+|sp_|AddU|sp_AddU|Will Add or Update a record. Requires p_Update = True to update, or will abord|
 |sp_|LDel|sp_LDel|Will logically delete a record|
 
 

@@ -18,11 +18,11 @@ CREATE TABLE Mgmt.Country
   Is_Available BOOLEAN NOT NULL DEFAULT TRUE,
   App_Listing_Order INTEGER NOT NULL DEFAULT 9999,
   -- this is defined as a char to preserve leading zeros
-  DB_Created_Date     	TIMESTAMP WITH TIME ZONE NULL    			DEFAULT  NOW(),
-  DB_Created_By        	VARCHAR(255)  NULL			DEFAULT  Current_User(),
-  DB_Is_Deleted         	BOOLEAN  NULL 				DEFAULT  FALSE,
-  DB_Last_Updated_Date   TIMESTAMP WITH TIME ZONE  NULL 			DEFAULT  NOW(),
-  DB_Last_Updated_By   	VARCHAR(255)  NULL 			DEFAULT  Current_User(),
+  DB_Created_Date     	TIMESTAMP WITH TIME ZONE  NULL  DEFAULT  NOW(),
+  DB_Created_By        	VARCHAR(255)              NULL	DEFAULT  Current_User,
+  DB_Is_Deleted         BOOLEAN                   NULL 	DEFAULT  FALSE,
+  DB_Last_Updated_Date  TIMESTAMP WITH TIME ZONE  NULL 	DEFAULT  NOW(),
+  DB_Last_Updated_By   	VARCHAR(255)              NULL 	DEFAULT  Current_User,
 PRIMARY KEY (Country_ID)
 );
 
