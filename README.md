@@ -28,3 +28,13 @@ The guidance document is [here](SQL/LookUp_Table.md )
 
 
 # Automation
+
+
+Automation steps are captured in [.github\workflows](.github\workflows).
+
+
+Automations in place include: 
+
+1. Consolidation of all [Postgres SQL Scripts](PostgreSQL\SQL_Scripts)  to a single file (002-init.sql)[PostgreSQL\Container\docker\postgres\002-init.sql] in the Docker container folder. 
+
+
