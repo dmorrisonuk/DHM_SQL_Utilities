@@ -32,12 +32,20 @@ CREATE TABLE Mgmt.Organisation
 )
 ;
 
-INSERT INTO Mgmt.Organisation(company_name,Company_Identifier , Organisation_ID, parent_organisation_id, inherit_flg, Is_Skeleton	)
-	VALUES  ('Ultimate-Parent', 'Ultimate-Parent', 1, 1, False, True),
-	        ('Sub-Co', 'Sub-Co', 2, 1, False, True);
+/* Insert the Missing Skeleton as first record*/
+INSERT INTO Mgmt.Organisation(company_name, Company_Identifier , inherit_flg, Is_Skeleton	)
+	VALUES  ('Missing', 'Missing',   False, True),
+
+/* Insert remaing sekelton records */
+
+	INSERT INTO Mgmt.Organisation(company_name, Company_Identifier , parent_organisation_id, inherit_flg, Is_Skeleton	)
+			('Ultimate-Parent', 'Ultimate-Parent',  1, False, True),
+	        ('Sub-Co', 'Sub-Co',  2, False, True),
+	        ('Public', 'Public',  1, False, True),
 
 
-COMMENT ON TABLE Mgmt.Organisation IS E'Client organisational structure. \n\nNeeds 3 default skeleton records: \n\n1 = Missing\n2 = Public\n3 = Ultimate Parent\n\nSelf-referencing to allow for a hierarchy to be defined. \n\nInherit_Flg specifies where permissions should be inheritied - i.e. a user with the permissions in #3 will have the same permission in all lower strata of the org. \n\nTherefore there may be 2 parent-child relations coded - where Inherit = True and Inherit = False\n';
+
+COMMENT ON TABLE Mgmt.Organisation IS E'Client organisational structure. \n\nNeeds 3 default skeleton records: \n\n1 = Ultimate Parent \n2 = Sub-Co\n3 = Public\n\nSelf-referencing to allow for a hierarchy to be defined. \n\nInherit_Flg specifies where permissions should be inheritied - i.e. a user with the permissions in #3 will have the same permission in all lower strata of the org. \n\nTherefore there may be 2 parent-child relations coded - where Inherit = True and Inherit = False\n';
 COMMENT ON COLUMN Mgmt.Organisation.Inherit_Flg IS E'Default = False - i.e. do NOT inherit';
 
 
@@ -72,7 +80,7 @@ CREATE OR REPLACE PROCEDURE Mgmt.sp_AddU_organisation(
   p_inherit_flg boolean,
   p_company_identifier varchar DEFAULT NULL,
   p_parent_company_name varchar DEFAULT NULL,
-  p_update boolean DEFAULT FALSE,
+  p_update boolean DEFAULT FALSE, -- Set to TRUE to update an existing organisation
   P_is_skeleton boolean DEFAULT FALSE NULL 
 )
 LANGUAGE plpgsql
@@ -216,7 +224,7 @@ COMMENT ON COLUMN Mgmt.App_User.Last_Modified_By IS E'Captures Users acting on o
 
 
 /* Insert Skeleton Admin User */
-INSERT INTO Mgmt.App_User	user_name) 
+INSERT INTO Mgmt.App_User	(user_name) 
 VALUES ('Administrator1');
 
 
