@@ -21,7 +21,7 @@ CREATE TABLE Mgmt.LookUps
    	DB_Created_Date     	TIMESTAMP WITH TIME ZONE  NULL  DEFAULT  NOW(),
    	DB_Created_By        	VARCHAR(255)              NULL	DEFAULT  Current_User,
    	DB_Is_Deleted         	BOOLEAN                   NULL 	DEFAULT  FALSE,
-   	DB_Last_Updated_Date  	IMESTAMP WITH TIME ZONE  NULL 	DEFAULT  NOW(),
+   	DB_Last_Updated_Date  	TIMESTAMP WITH TIME ZONE  NULL 	DEFAULT  NOW(),
    	DB_Last_Updated_By   	VARCHAR(255)              NULL 	DEFAULT  Current_User,
 	Constraint "LookUp_ID" PRIMARY KEY (LookUp_ID)
 );
@@ -91,15 +91,13 @@ AND LookUp_Record_ID > 0 -- skips the Lookup Creation Record
 CREATE OR REPLACE PROCEDURE Mgmt.sp_Create_LookUp(
 	IN p_LookUp_Name VARCHAR(50),
 	IN p_App_User_ID BIGINT,
-	IN p_Orgamisation_ID INT DEFAULT 1,
-	IN p_Ref_Entity VARCHAR(255) DEFAULT 'MISSING',
-
+	IN p_Organisation_ID INT DEFAULT 1,
+	IN p_Ref_Entity VARCHAR(255) DEFAULT 'MISSING'
 )
 LANGUAGE plpgsql
 AS $$
 DECLARE
 	v_LookUp_Record_ID INT;
-	v_Value VARCHAR;
 	v_User_Exists BOOLEAN;
 	v_Name_Exists BOOLEAN;
 BEGIN
@@ -131,6 +129,7 @@ BEGIN
 					LookUp_Name,
 					LookUp_Record_ID ,
 					LookUp_Value,
+					Ref_Entity,
 					Created_By_User_ID,
 					Organisation_ID
 				)
@@ -138,11 +137,10 @@ BEGIN
 				VALUES (
 					p_LookUp_Name,
 					0, -- zero captures lookup creation
-					v_Value,
-					p_Ref_Entity
+					concat(p_LookUp_Name, ' - Creation'),
+					p_Ref_Entity,
 					p_App_User_ID,
-					p_Orgamisation_ID 
-
+					p_Organisation_ID 
 					);
 
 				-- Dynamically create a view using the provided LookUp_Name
@@ -164,15 +162,13 @@ BEGIN
 					FROM Mgmt.LookUps
 					WHERE LookUp_Name = %L
 						AND DB_Is_Deleted = FALSE;',
-					p_LookUp_Name, p_LookUp_Name);
-
-
+					concat('vw_LU_',p_LookUp_Name), p_LookUp_Name);
 
 END;
 $$;
 
 
-COMMENT ON PROCEDURE mgmt."sp_Create_LookUp"(character varying[])
+COMMENT ON PROCEDURE mgmt.sp_Create_LookUp
     IS 'Logical LookUp Creation.';
 
-
+-- Next - add or update values to an existing lookup, with input arrays
