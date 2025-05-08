@@ -40,9 +40,10 @@ INSERT INTO Mgmt.Organisation(company_name, Company_Identifier , inherit_flg, Is
 
 	INSERT INTO Mgmt.Organisation(company_name, Company_Identifier , parent_organisation_id, inherit_flg, Is_Skeleton	)
 	VALUES 
+			('Public', 'Public',  1, False, True),
 			('Ultimate-Parent', 'Ultimate-Parent',  1, False, True),
-	        ('Sub-Co', 'Sub-Co',  2, False, True),
-	        ('Public', 'Public',  1, False, True);
+	        ('Sub-Co', 'Sub-Co',  2, False, True);
+	        
 
 
 COMMENT ON TABLE Mgmt.Organisation IS E'Client organisational structure. \n\nNeeds 3 default skeleton records: \n\n1 = Ultimate Parent \n2 = Sub-Co\n3 = Public\n\nSelf-referencing to allow for a hierarchy to be defined. \n\nInherit_Flg specifies where permissions should be inheritied - i.e. a user with the permissions in #3 will have the same permission in all lower strata of the org. \n\nTherefore there may be 2 parent-child relations coded - where Inherit = True and Inherit = False\n';

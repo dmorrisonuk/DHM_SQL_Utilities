@@ -193,3 +193,13 @@ The use of skeleton records means that dropping / re-creation of constraints is 
 
 
 
+# Alternate Style Guides
+
+
+| Guide Name         | Link                                   |
+|:-------------------|:---------------------------------------|
+| Simon Holywell - SQL Style Guide    | [Link](https://www.sqlstyle.guide/)    |
+| PostgreSQL Guide   | [Link](https://www.postgresql.org/docs/) |
+| Microsoft SQL Guide| [Link](https://learn.microsoft.com/en-us/sql/) |
+| Oracle SQL Guide   | [Link](https://docs.oracle.com/en/database/) |
+| MySQL Style Guide  | [Link](https://dev.mysql.com/doc/)     |
